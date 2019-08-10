@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <h1>Look at some dogs!</h1>
+  <!-- Pull in list of available dogs -->
+  <select id="breedList"></select>
+  <!-- Get image -->
+  <button onclick="getImg()">Get Dog Pic</button>
+  <div>
+    <img id="dogPic" style="max-width: 500px; max-height: 500px;" src=""/>
+  </div>
+</body>
+</html>
+
+<script>
+  (function loadDogList(){
+    let selectList = document.getElementById('breedList');
+    let optionEle = document.createElement('option');
+    optionEle.value = "random";
+    optionEle.text = "random";
+    selectList.appendChild(optionEle);
+    fetch('https://dog.ceo/api/breeds/list/all').then((response) => {
+      response.json()
+      .then((response) => {
+        let dogList = response.message;
+        for (const key in dogList) {
+          if (dogList.hasOwnProperty(key)) {
+            const breedName = key;
+            let optionEle = document.createElement('option');
+            optionEle.value = breedName;
+            optionEle.text = breedName;
+            selectList.appendChild(optionEle);
+          }
+        }
+      });
+    });
+  }())
+
+  function getImg(){
+    let breed = document.getElementById("breedList").value;
+    let url;
+    if(breed === 'random'){
+      url = "https://dog.ceo/api/breeds/image/random";
+    }
+    else{
+      url = `https://dog.ceo/api/breed/${breed}/images/random`;
+    }
+
+    fetch(url).then((result) => {
+      result.json()
+      .then((result) => {
+        let imgSrc = result.message;
+        let imgTag = document.getElementById('dogPic');
+        imgTag.src = imgSrc;
+      });
+    });
+  }
+</script>
